@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="namespace"></string>
+	<string name="oldActivityName"></string>
 	<string name="nativeDataDir"></string>
 	<string name="libraryName"></string>
 	<string name="defaultsFile"></string>

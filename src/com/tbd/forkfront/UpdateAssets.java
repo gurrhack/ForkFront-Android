@@ -63,8 +63,11 @@ public class UpdateAssets extends AsyncTask<Void, Void, Void>
 	private static void convertFromOldPreferences(Activity activity)
 	{
 		// Old versions used a different preference store than the rest of the app
+		String oldActivityName = activity.getResources().getString(R.string.oldActivityName);
+		if(oldActivityName == null || oldActivityName.length() == 0)
+			return;
 
-		SharedPreferences oldPrefs = activity.getPreferences(Activity.MODE_PRIVATE);
+		SharedPreferences oldPrefs = activity.getSharedPreferences(oldActivityName, Activity.MODE_PRIVATE);
 		SharedPreferences newPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		SharedPreferences.Editor oldEditor = oldPrefs.edit();
 		SharedPreferences.Editor newEditor = newPrefs.edit();
