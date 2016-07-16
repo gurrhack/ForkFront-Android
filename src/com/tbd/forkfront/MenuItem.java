@@ -33,7 +33,7 @@ public class MenuItem
 		int rsp = text.lastIndexOf(')');
 		int lwp = text.lastIndexOf('{');
 		int rwp = text.lastIndexOf('}');
-		if(accelerator != 0 && (rsp > lsp && rsp == text.length() - 1 || rwp > lwp && rwp == text.length() - 1))
+		if(accelerator != 0 && (lsp > 0 || lwp > 0) && (rsp > lsp && rsp == text.length() - 1 || rwp > lwp && rwp == text.length() - 1))
 		{
 			boolean hasStatus = rsp > lsp;
 			mName = text.substring(0, hasStatus ? lsp : lwp);
