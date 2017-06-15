@@ -3,15 +3,11 @@ package com.tbd.forkfront;
 import java.util.Set;
 
 import android.app.Activity;
-import android.view.KeyEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.*;
 
-import com.tbd.forkfront.*;
 import com.tbd.forkfront.Input.Modifier;
 
 public class NH_Question
@@ -66,12 +62,20 @@ public class NH_Question
 			return KeyEventResult.IGNORED;
 		return mUI.handleKeyDown(ch, nhKey, keyCode, modifiers, repeatCount, bSoftInput);
 	}
-	
+
+	// ____________________________________________________________________________________
+	public void setOrientation(int orientation)
+	{
+		if(mUI != null)
+			mUI.setOrientation(orientation);
+	}
+
 	// ____________________________________________________________________________________ //
 	// 																						//
 	// ____________________________________________________________________________________ //
 	private class UI
 	{
+		private final Movable mMovable;
 		private View mRoot;
 
 		// ____________________________________________________________________________________
@@ -125,7 +129,7 @@ public class NH_Question
 			((TextView)mRoot.findViewById(R.id.title)).setText(mQuestion);
 
 			mRoot.setOnKeyListener(mKeyListener);
-			
+
 			// mRoot.setClickable(true);
 			// mRoot.setFocusable(true);
 			// mRoot.setFocusableInTouchMode(true);
@@ -136,10 +140,13 @@ public class NH_Question
 				def.requestFocus();
 				def.requestFocusFromTouch();
 			}
-			else
+			else {
 				mRoot.requestFocus();
+			}
 			
 			mState.hideControls();
+
+			mMovable = new Movable(context, mRoot);
 		}
 
 		OnKeyListener mKeyListener = new OnKeyListener()
@@ -163,7 +170,13 @@ public class NH_Question
 				return false;
 			}
 		};
-		
+
+		// ____________________________________________________________________________________
+		public void setOrientation(int orientation)
+		{
+			mMovable.setOrientation(orientation);
+		}
+
 		// ____________________________________________________________________________________
 		public KeyEventResult handleKeyDown(char ch, int nhKey, int keyCode, Set<Modifier> modifiers, int repeatCount, boolean bSoftInput)
 		{

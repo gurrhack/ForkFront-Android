@@ -119,6 +119,10 @@ public class NH_State
 		
 		mCmdPanelLayout.setOrientation(newConfig.orientation);
 		mDPad.setOrientation(newConfig.orientation);
+		mQuestion.setOrientation(newConfig.orientation);
+		mGetLine.setOrientation(newConfig.orientation);
+		for(NH_Window w : mWindows)
+			w.setOrientation(newConfig.orientation);
 	}
 
 	// ____________________________________________________________________________________
