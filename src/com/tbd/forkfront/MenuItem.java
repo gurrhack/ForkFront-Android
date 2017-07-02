@@ -29,11 +29,11 @@ public class MenuItem
 		mAttr = attr == TextAttr.ATTR_BOLD ? TextAttr.ATTR_INVERSE : attr;
 
 		String text = str;
-		int lsp = text.lastIndexOf('(');
+		int lsp = text.lastIndexOf(" (") + 1;
 		int rsp = text.lastIndexOf(')');
 		int lwp = text.lastIndexOf('{');
 		int rwp = text.lastIndexOf('}');
-		if(accelerator != 0 && (lsp > 0 || lwp > 0) && (rsp > lsp && rsp == text.length() - 1 || rwp > lwp && rwp == text.length() - 1))
+		if(!isHeader() && (lsp > 0 || lwp > 0) && (rsp > lsp && rsp == text.length() - 1 || rwp > lwp && rwp == text.length() - 1))
 		{
 			boolean hasStatus = rsp > lsp;
 			mName = text.substring(0, hasStatus ? lsp : lwp);
