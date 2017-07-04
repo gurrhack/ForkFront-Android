@@ -80,6 +80,7 @@ public class Movable {
 		public boolean onTouch(View v, MotionEvent event) {
 			switch(getAction(event)) {
 				case MotionEvent.ACTION_DOWN:
+				case MotionEvent.ACTION_POINTER_DOWN:
 					if(mPointerId == null) {
 						int idx = getActionIndex(event);
 						mPointerId = event.getPointerId(idx);
@@ -125,6 +126,7 @@ public class Movable {
 					break;
 
 				case MotionEvent.ACTION_UP:
+				case MotionEvent.ACTION_POINTER_UP:
 					if(mPointerId != null) {
 						int idx = getActionIndex(event);
 						int pointerId = event.getPointerId(idx);
