@@ -799,7 +799,35 @@ public class NetHackIO
 		});
 		return waitForLine();
 	}
-	
+
+	// ____________________________________________________________________________________
+	@SuppressWarnings("unused")
+	private void loadSound(final byte[] filename)
+	{
+		mHandler.post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				mNhHandler.loadSound(new String(filename));
+			}
+		});
+	}
+
+	// ____________________________________________________________________________________
+	@SuppressWarnings("unused")
+	private void playSound(final byte[] filename, final int volume)
+	{
+		mHandler.post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				mNhHandler.playSound(new String(filename), volume);
+			}
+		});
+	}
+
 	// ____________________________________________________________________________________
 	private native void RunNetHack(String path);
 	private native void SaveNetHackState();
