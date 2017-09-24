@@ -152,6 +152,11 @@ public class NH_State
 	}
 
 	// ____________________________________________________________________________________
+	public void onContextMenuClosed() {
+		mCmdPanelLayout.onContextMenuClosed();
+	}
+
+	// ____________________________________________________________________________________
 	public void onContextItemSelected(android.view.MenuItem item)
 	{
 		mCmdPanelLayout.onContextItemSelected(item);
