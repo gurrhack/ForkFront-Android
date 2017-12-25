@@ -3,6 +3,7 @@ package com.tbd.forkfront;
 import java.util.Set;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
@@ -37,12 +38,12 @@ public class NH_Question
 		mDefCh = def;
 		mQuestion = question;
 		mChoices = new char[choices.length];
-		mDefIdx = mBtns[0];
+		mDefIdx = 0;
 		for(int i = 0; i < choices.length; i++)
 		{
 			mChoices[i] = (char)choices[i];
 			if(mChoices[i] == def)
-				mDefIdx = mBtns[i];
+				mDefIdx = i;
 		}
 
 		mUI = new UI(context);
@@ -77,6 +78,7 @@ public class NH_Question
 	{
 		private final Movable mMovable;
 		private View mRoot;
+		private boolean mIsDisabled;
 
 		// ____________________________________________________________________________________
 		public UI(Activity context)
@@ -134,11 +136,13 @@ public class NH_Question
 			// mRoot.setFocusable(true);
 			// mRoot.setFocusableInTouchMode(true);
 
-			final View def = mRoot.findViewById(mDefIdx);
+			final View def = mRoot.findViewById(mBtns[mDefIdx]);
 			if(def != null)
 			{
 				def.requestFocus();
 				def.requestFocusFromTouch();
+
+				maybeDisableInput();
 			}
 			else {
 				mRoot.requestFocus();
@@ -149,12 +153,30 @@ public class NH_Question
 			mMovable = new Movable(context, mRoot);
 		}
 
+		private void maybeDisableInput() {
+			if(mChoices.length == 2 && mQuestion.startsWith("Really")) {
+				// Disable the non-default choice for a while. Gives the player a chance to react if moving quickly
+				final View nonDef = mRoot.findViewById(mBtns[mDefIdx^1]);
+				if(nonDef != null) {
+					mIsDisabled = true;
+					nonDef.setEnabled(false);
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mIsDisabled = false;
+							nonDef.setEnabled(true);
+						}
+					}, 350);
+				}
+			}
+		}
+
 		OnKeyListener mKeyListener = new OnKeyListener()
 		{
 			public boolean onKey(View v, int keyCode, KeyEvent event)
 			{
 				Log.print("QUES ONKEY");
-				if(event.getAction() != KeyEvent.ACTION_DOWN)
+				if(event.getAction() != KeyEvent.ACTION_DOWN || mIsDisabled)
 					return false;
 /*
 				int ch = event.getUnicodeChar();
@@ -180,7 +202,7 @@ public class NH_Question
 		// ____________________________________________________________________________________
 		public KeyEventResult handleKeyDown(char ch, int nhKey, int keyCode, Set<Modifier> modifiers, int repeatCount, boolean bSoftInput)
 		{
-			if(mRoot == null)
+			if(mRoot == null || mIsDisabled)
 				return KeyEventResult.IGNORED;
 			
 			switch(keyCode)
