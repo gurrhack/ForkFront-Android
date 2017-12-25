@@ -17,5 +17,4 @@ public interface NH_Window
 	void setContext(Activity context);
 	String getTitle();
 	void setCursorPos(int x, int y);
-	void setOrientation(int orientation);
 }

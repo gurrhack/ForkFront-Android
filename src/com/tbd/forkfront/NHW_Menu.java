@@ -216,14 +216,6 @@ public class NHW_Menu implements NH_Window
 		show(false);
 	}
 
-	// ____________________________________________________________________________________
-	@Override
-	public void setOrientation(int orientation)
-	{
-		if(mUI != null)
-			mUI.setOrientation(orientation);
-	}
-
 	// ____________________________________________________________________________________ //
 	// 																						//
 	// ____________________________________________________________________________________ //
@@ -238,13 +230,6 @@ public class NHW_Menu implements NH_Window
 		public UI(Activity context)
 		{
 			mContext = context;
-		}
-
-		// ____________________________________________________________________________________
-		public void setOrientation(int orientation)
-		{
-			if(mAmountSelector != null)
-				mAmountSelector.setOrientation(orientation);
 		}
 
 		public KeyEventResult handleKeyDown(char ch, int nhKey, int keyCode, Set<Modifier> modifiers, int repeatCount, boolean bSoftInput)

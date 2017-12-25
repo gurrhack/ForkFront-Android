@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@android:drawable/screen_background_dark_transparent"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-	android:orientation="vertical"
-	android:clickable="true"
+    android:clickable="true"
     android:focusableInTouchMode="true"
     android:nextFocusDown="@+id/input"
     android:nextFocusLeft="@+id/btn_1"
     android:nextFocusRight="@+id/btn_0"
     android:nextFocusUp="@+id/input" >
 
-	<View
-		android:id="@+id/paddingTop"
-		android:layout_width="match_parent"
-		android:layout_height="0px"
-		android:layout_weight="50"/>
     <LinearLayout
         style="@style/NH_Dialog"
-        android:id="@+id/movable"
 		android:orientation="vertical"
+		android:layout_centerInParent="true"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 
@@ -104,10 +98,5 @@
                 android:text="Cancel" />
         </LinearLayout>
     </LinearLayout>
-	<View
-		android:id="@+id/paddingBottom"
-		android:layout_width="match_parent"
-		android:layout_height="0px"
-		android:layout_weight="50"/>
 
-</LinearLayout>
+</RelativeLayout>

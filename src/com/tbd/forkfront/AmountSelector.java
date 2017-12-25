@@ -28,7 +28,6 @@ public class AmountSelector
 	private int mMax;
 	private MenuItem mItem;
 	private Listener mListener;
-	private final Movable mMovable;
 
 	private AmountTuner mAmountTuner = new AmountTuner();
 	
@@ -175,14 +174,6 @@ public class AmountSelector
 
 		seek.requestFocus();
 		seek.requestFocusFromTouch();
-
-		mMovable = new Movable(context, mRoot);
-	}
-
-	// ____________________________________________________________________________________
-	public void setOrientation(int orientation)
-	{
-		mMovable.setOrientation(orientation);
 	}
 
 	// ____________________________________________________________________________________

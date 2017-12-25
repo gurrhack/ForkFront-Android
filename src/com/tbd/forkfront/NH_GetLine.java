@@ -148,19 +148,11 @@ public class NH_GetLine
 		return history;
 	}
 
-	// ____________________________________________________________________________________
-	public void setOrientation(int orientation)
-	{
-		if(mUI != null)
-			mUI.setOrientation(orientation);
-	}
-
 	// ____________________________________________________________________________________ //
 	// 																						//
 	// ____________________________________________________________________________________ //
 	private class UI
 	{
-		private final Movable mMovable;
 		private Context mContext;
 		private EditText mInput;
 		private ListView mHistoryList;
@@ -293,14 +285,6 @@ public class NH_GetLine
 			
 			if(showKeyboard)
 				Util.showKeyboard(context, mInput);
-
-			mMovable = new Movable(context, mRoot);
-		}
-
-		// ____________________________________________________________________________________
-		public void setOrientation(int orientation)
-		{
-			mMovable.setOrientation(orientation);
 		}
 
 		// ____________________________________________________________________________________

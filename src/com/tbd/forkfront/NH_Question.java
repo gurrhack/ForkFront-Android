@@ -4,10 +4,13 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.widget.*;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.tbd.forkfront.Input.Modifier;
 
@@ -64,19 +67,11 @@ public class NH_Question
 		return mUI.handleKeyDown(ch, nhKey, keyCode, modifiers, repeatCount, bSoftInput);
 	}
 
-	// ____________________________________________________________________________________
-	public void setOrientation(int orientation)
-	{
-		if(mUI != null)
-			mUI.setOrientation(orientation);
-	}
-
 	// ____________________________________________________________________________________ //
 	// 																						//
 	// ____________________________________________________________________________________ //
 	private class UI
 	{
-		private final Movable mMovable;
 		private View mRoot;
 		private boolean mIsDisabled;
 
@@ -147,10 +142,8 @@ public class NH_Question
 			else {
 				mRoot.requestFocus();
 			}
-			
-			mState.hideControls();
 
-			mMovable = new Movable(context, mRoot);
+			mState.hideControls();
 		}
 
 		private void maybeDisableInput() {
@@ -192,12 +185,6 @@ public class NH_Question
 				return false;
 			}
 		};
-
-		// ____________________________________________________________________________________
-		public void setOrientation(int orientation)
-		{
-			mMovable.setOrientation(orientation);
-		}
 
 		// ____________________________________________________________________________________
 		public KeyEventResult handleKeyDown(char ch, int nhKey, int keyCode, Set<Modifier> modifiers, int repeatCount, boolean bSoftInput)

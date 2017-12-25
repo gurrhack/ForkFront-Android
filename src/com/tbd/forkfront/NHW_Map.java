@@ -224,11 +224,6 @@ public class NHW_Map implements NH_Window
 	}
 
 	// ____________________________________________________________________________________
-	@Override
-	public void setOrientation(int orientation) {
-	}
-
-	// ____________________________________________________________________________________
 	public void cliparound(final int tileX, final int tileY, final int playerX, final int playerY)
 	{
 		mPlayerPos.x = playerX;

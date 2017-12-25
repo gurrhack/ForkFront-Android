@@ -137,10 +137,6 @@ public class NHW_Text implements NH_Window
 		return mIsVisible;
 	}
 
-	@Override
-	public void setOrientation(int orientation) {
-	}
-
 	// ____________________________________________________________________________________ //
 	// 																						//
 	// ____________________________________________________________________________________ //
