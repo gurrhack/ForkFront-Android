@@ -130,8 +130,8 @@ public class NH_State
 
 		mCmdPanelLayout.preferencesUpdated(prefs);
 		mDPad.preferencesUpdated(prefs);
-		mStatus.preferencesUpdated(prefs);
-		mMessage.preferencesUpdated(prefs);
+		for(NH_Window w : mWindows)
+			w.preferencesUpdated(prefs);
 
 		if(mMode == CmdMode.Panel)
 			mCmdPanelLayout.show();

@@ -175,9 +175,9 @@ public class MenuItem
 	{
 		mAccelerator = acc;
 		if(acc != 0)
-			mAccText = new SpannableString(Character.toString(acc));
+			mAccText = new SpannableString(Character.toString(acc) + "   ");
 		else
-			mAccText = null;
+			mAccText = new SpannableString("    ");
 	}
 
 	// ____________________________________________________________________________________

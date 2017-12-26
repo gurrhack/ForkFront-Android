@@ -134,6 +134,7 @@ public class NHW_Status implements NH_Window
 	}
 
 	// ____________________________________________________________________________________
+	@Override
 	public void preferencesUpdated(SharedPreferences prefs)
 	{
 		mOpacity = prefs.getInt("statusOpacity", 0);

@@ -58,6 +58,13 @@
                 android:defaultValue="true"
                 android:key="lockView"/>
 
+		<CheckBoxPreference
+			android:title="Monospace mode"
+			android:summary="Use a monospace font for nicer typography"
+			android:persistent="true"
+			android:defaultValue="false"
+			android:key="monospace"/>
+
 		<com.tbd.forkfront.SliderPreference
 			android:title="Status background opacity"
 			android:summary="The background opacity of the status lines"

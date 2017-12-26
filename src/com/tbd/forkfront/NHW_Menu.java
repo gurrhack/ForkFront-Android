@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.text.SpannableStringBuilder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
-import com.tbd.forkfront.*;
 import com.tbd.forkfront.Input.Modifier;
 
 public class NHW_Menu implements NH_Window
@@ -214,6 +210,12 @@ public class NHW_Menu implements NH_Window
 		mKeyboardCount = -1;
 		mUI.createMenu(how);
 		show(false);
+	}
+
+	// ____________________________________________________________________________________
+	@Override
+	public void preferencesUpdated(SharedPreferences prefs) {
+		mUI.preferencesUpdated(prefs);
 	}
 
 	// ____________________________________________________________________________________ //
@@ -837,6 +839,13 @@ public class NHW_Menu implements NH_Window
 			case PickMany:
 				sendSelectChecked();
 			break;
+			}
+		}
+
+		public void preferencesUpdated(SharedPreferences prefs) {
+			if(mListView != null && mListView.getAdapter() != null) {
+				mListView.invalidateViews();
+				((MenuItemAdapter)mListView.getAdapter()).notifyDataSetChanged();
 			}
 		}
 	}

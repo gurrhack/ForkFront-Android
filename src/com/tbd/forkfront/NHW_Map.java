@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tbd.forkfront.*;
 
 public class NHW_Map implements NH_Window
 {
@@ -385,6 +384,11 @@ public class NHW_Map implements NH_Window
 	}
 
 	// ____________________________________________________________________________________
+	@Override
+	public void preferencesUpdated(SharedPreferences prefs) {
+	}
+
+	// ____________________________________________________________________________________
 	public void pan(float dx, float dy)
 	{
 		if(canPan())
@@ -578,8 +582,8 @@ public class NHW_Map implements NH_Window
 	{
 		private CountDownTimer mPressCountDown;
 		private TextPaint mPaint;
-		private PointF mPointer0;
-		private PointF mPointer1;
+		private final PointF mPointer0;
+		private final PointF mPointer1;
 		private int mPointerId0;
 		private int mPointerId1;
 		private float mPointerDist;

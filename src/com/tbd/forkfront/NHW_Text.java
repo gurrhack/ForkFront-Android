@@ -3,6 +3,7 @@ package com.tbd.forkfront;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.text.SpannableStringBuilder;
 import android.view.*;
 import android.widget.ScrollView;
@@ -75,6 +76,10 @@ public class NHW_Text implements NH_Window
 	@Override
 	public void setCursorPos(int x, int y)
 	{
+	}
+
+	@Override
+	public void preferencesUpdated(SharedPreferences prefs) {
 	}
 
 	// ____________________________________________________________________________________
