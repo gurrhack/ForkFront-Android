@@ -318,6 +318,15 @@ public class ForkFront extends Activity
 		if(fixedCode == KeyEvent.KEYCODE_VOLUME_DOWN || fixedCode == KeyEvent.KEYCODE_VOLUME_UP)
 			return false;
 
+		if(repeatCount > 0) switch(fixedCode) {
+			case KeyAction.Keyboard:
+			case KeyAction.Control:
+			case KeyAction.Meta:
+			case KeyEvent.KEYCODE_ESCAPE:
+				// Ignore repeat on these actions
+				return true;
+		}
+
 		if(fixedCode == KeyAction.Control)
 			mCtrlDown = true;
 		else if(fixedCode == KeyAction.Meta)
