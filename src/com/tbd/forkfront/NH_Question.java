@@ -153,7 +153,7 @@ public class NH_Question
 				if(nonDef != null) {
 					mIsDisabled = true;
 					nonDef.setEnabled(false);
-					new Handler().postDelayed(new Runnable() {
+					mState.getHandler().postDelayed(new Runnable() {
 						@Override
 						public void run() {
 							mIsDisabled = false;
