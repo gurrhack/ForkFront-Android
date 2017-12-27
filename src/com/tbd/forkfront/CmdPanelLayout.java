@@ -45,6 +45,7 @@ public class CmdPanelLayout extends FrameLayout
 	private View mViewArea;
 	private CmdPanelSizeOpacity mCmdPanelSize;
 	private CmdPanelSizeOpacity mCmdPanelOpacity;
+	private Cmd mExecutingCmd;
 
 	// ____________________________________________________________________________________
 	public CmdPanelLayout(Context context)
@@ -728,4 +729,19 @@ public class CmdPanelLayout extends FrameLayout
 			panel.panel.setOpacity(panel.opacity);
 	}
 
+
+	// ____________________________________________________________________________________
+	public void executeCmd(Cmd cmd) {
+		if(mExecutingCmd == null) {
+			mExecutingCmd = cmd;
+			cmd.execute(ExecuteFinishedHandler);
+		}
+	}
+
+	private Cmd.ExecuteFinishedHandler ExecuteFinishedHandler = new Cmd.ExecuteFinishedHandler() {
+		@Override
+		public void onExecuteFinished() {
+			mExecutingCmd = null;
+		}
+	};
 }

@@ -187,7 +187,7 @@ public class CmdPanel
 		{
 			public void onClick(View v)
 			{
-				cmd.execute();
+				mLayout.executeCmd(cmd);
 			}
 		});
 		return btn;
