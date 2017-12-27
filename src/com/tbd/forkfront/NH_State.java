@@ -170,6 +170,17 @@ public class NH_State
 			return true;
 		}
 
+		if(repeatCount > 0) switch(keyCode) {
+			case KeyAction.Keyboard:
+				if(mMode == CmdMode.Keyboard)
+					mStickyKeyboard = false;
+			case KeyAction.Control:
+			case KeyAction.Meta:
+			case KeyEvent.KEYCODE_ESCAPE:
+				// Ignore repeat on these actions
+				return true;
+		}
+
 		KeyEventResult ret = mGetLine.handleKeyDown(ch, nhKey, keyCode, modifiers, repeatCount, bSoftInput);
 
 		if(ret == KeyEventResult.IGNORED)
@@ -199,18 +210,13 @@ public class NH_State
 		}
 		else if(keyCode == KeyAction.Keyboard)
 		{
-			if(repeatCount == 0)
-			{
-				mStickyKeyboard = true;
-				toggleKeyboard();
-			}
-			else if(mMode == CmdMode.Keyboard)
-				mStickyKeyboard = false;
+			mStickyKeyboard = true;
+			toggleKeyboard();
 			return true;
 		}
 		else if(keyCode == KeyAction.Control || keyCode == KeyAction.Meta)
 		{
-			if(repeatCount == 0 && !Util.hasPhysicalKeyboard(mContext))
+			if(!Util.hasPhysicalKeyboard(mContext))
 			{
 				saveRegularKeyboard();
 				if(mMode != CmdMode.Keyboard)
