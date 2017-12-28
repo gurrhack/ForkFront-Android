@@ -32,6 +32,12 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem>
 		mTileset = tileset;
 		mHow = how;
 		mMenuHasTiles = menuHasTiles(items);
+		updateMonospaceFlag();
+	}
+
+	private void updateMonospaceFlag() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		mIsMonospaceMode = prefs.getBoolean("monospace", false);
 	}
 
 	// ____________________________________________________________________________________
@@ -149,7 +155,6 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem>
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		mIsMonospaceMode = prefs.getBoolean("monospace", false);
+		updateMonospaceFlag();
 	}
 }
