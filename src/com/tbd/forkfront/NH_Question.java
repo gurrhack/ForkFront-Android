@@ -159,7 +159,7 @@ public class NH_Question
 							mIsDisabled = false;
 							nonDef.setEnabled(true);
 						}
-					}, 350);
+					}, 500);
 				}
 			}
 		}
