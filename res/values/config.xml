@@ -12,4 +12,5 @@
 	<string name="hearseNethackVersion"></string>
 	<string name="hearseRoles"></string>
 	<bool name="hearseLittleEndian">false</bool>
+	<bool name="oldStatusMode">false</bool>
 </resources>
