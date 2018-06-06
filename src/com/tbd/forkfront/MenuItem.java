@@ -26,7 +26,11 @@ public class MenuItem
 		mIdent = ident;
 		mAccelerator = (char)accelerator;
 		mGroupacc = (char)groupacc;
-		mAttr = attr == TextAttr.ATTR_BOLD ? TextAttr.ATTR_INVERSE : attr;
+
+		if(mAccelerator == 0 && mIdent == 0 && attr == TextAttr.ATTR_BOLD)
+			mAttr = TextAttr.ATTR_INVERSE; // Special case for group headers
+		else
+			mAttr = attr; // Else regular entry
 
 		String text = str;
 		int lsp = text.lastIndexOf(" (") + 1;
@@ -110,7 +114,7 @@ public class MenuItem
 	// ____________________________________________________________________________________
 	public boolean isHeader()
 	{
-		return mAttr == TextAttr.ATTR_INVERSE;
+		return mAccelerator == 0 && mIdent == 0 && mAttr == TextAttr.ATTR_INVERSE;
 	}
 
 	// ____________________________________________________________________________________
