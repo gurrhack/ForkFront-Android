@@ -107,7 +107,7 @@ public class NH_State
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		return prefs.getString("lastUsername", "");
 	}
-	
+
 	// ____________________________________________________________________________________
 	public void onConfigurationChanged(Configuration newConfig)
 	{
@@ -118,7 +118,7 @@ public class NH_State
 			hideKeyboard();
 			showKeyboard();
 		}
-		
+
 		mCmdPanelLayout.setOrientation(newConfig.orientation);
 		mDPad.setOrientation(newConfig.orientation);
 	}
@@ -130,8 +130,14 @@ public class NH_State
 
 		mCmdPanelLayout.preferencesUpdated(prefs);
 		mDPad.preferencesUpdated(prefs);
+		mMap.preferencesUpdated(prefs);
+		mStatus.preferencesUpdated(prefs);
+		mMessage.preferencesUpdated(prefs);
 		for(NH_Window w : mWindows)
-			w.preferencesUpdated(prefs);
+		{
+			if(w != mMap && w != mStatus && w != mMessage)
+				w.preferencesUpdated(prefs);
+		}
 
 		if(mMode == CmdMode.Panel)
 			mCmdPanelLayout.show();
@@ -196,7 +202,7 @@ public class NH_State
 			return true;
 		if(ret == KeyEventResult.RETURN_TO_SYSTEM)
 			return false;
-				
+
 		if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME)
 		{
 			if(mMode == CmdMode.Keyboard)
@@ -204,7 +210,7 @@ public class NH_State
 				hideKeyboard();
 				return true;
 			}
-			
+
 			if(mIsDPadActive)
 				return sendKeyCmd('\033');
 		}
@@ -288,7 +294,7 @@ public class NH_State
 					hideKeyboard();
 				restoreRegularKeyboard();
 			}
-					
+
 			mHideQuickKeyboard = false;
 			return true;
 		}
@@ -441,7 +447,7 @@ public class NH_State
 	{
 		return mMode == CmdMode.Keyboard && mControlsVisible;
 	}
-	
+
 	// ____________________________________________________________________________________
 	public void updateVisibleState()
 	{
