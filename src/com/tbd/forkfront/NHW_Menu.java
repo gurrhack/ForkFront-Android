@@ -228,6 +228,7 @@ public class NHW_Menu implements NH_Window
 		
 		private ListView mListView;
 		private AmountSelector mAmountSelector;
+		private Button mSelectAllBtn;
 
 		public UI(Activity context)
 		{
@@ -342,10 +343,23 @@ public class NHW_Menu implements NH_Window
 						if(mKeyboardCount < 0)
 							mKeyboardCount = 0;
 						mKeyboardCount = mKeyboardCount * 10 + ch - '0';
+						return KeyEventResult.HANDLED;
 					}
 					else if(menuSelect(ch))
 						return KeyEventResult.HANDLED;
-
+					else if(mHow == MenuSelectMode.PickMany)
+					{
+						if(ch == '.' || keyCode == KeyEvent.KEYCODE_PERIOD)
+						{
+							selectAll();
+							return KeyEventResult.HANDLED;
+						}
+						else if(ch == '-' || keyCode == KeyEvent.KEYCODE_MINUS)
+						{
+							clearAll();
+							return KeyEventResult.HANDLED;
+						}
+					}
 					return KeyEventResult.RETURN_TO_SYSTEM;
 				}
 				return KeyEventResult.HANDLED;
@@ -589,6 +603,8 @@ public class NHW_Menu implements NH_Window
 				}
 				((MenuItemAdapter)mListView.getAdapter()).notifyDataSetChanged();
 				mKeyboardCount = -1;
+				if(mSelectAllBtn != null)
+					mSelectAllBtn.setText("Clear all");
 			}
 		}
 
@@ -605,6 +621,8 @@ public class NHW_Menu implements NH_Window
 				}
 				((MenuItemAdapter)mListView.getAdapter()).notifyDataSetChanged();
 				mKeyboardCount = -1;
+				if(mSelectAllBtn != null)
+					mSelectAllBtn.setText("Select all");
 			}
 		}
 
@@ -694,24 +712,17 @@ public class NHW_Menu implements NH_Window
 			break;
 			}
 
-			final Button selectAllBtn = (Button)mRoot.findViewById(R.id.btn_all);
-			if(selectAllBtn != null)
-				selectAllBtn.setOnClickListener(new OnClickListener()
+			mSelectAllBtn = (Button)mRoot.findViewById(R.id.btn_all);
+			if(mSelectAllBtn != null)
+				mSelectAllBtn.setOnClickListener(new OnClickListener()
 				{
 					@Override
 					public void onClick(View view)
 					{
-						if("Clear all".equals(selectAllBtn.getText().toString()))
-						{
+						if("Clear all".equals(mSelectAllBtn.getText().toString()))
 							clearAll();
-							selectAllBtn.setText("Select all");
-						}
 						else
-						{
 							selectAll();
-							selectAllBtn.setText("Clear all");
-						}
-
 					}
 				});
 
