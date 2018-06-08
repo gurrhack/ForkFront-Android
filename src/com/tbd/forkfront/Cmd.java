@@ -252,6 +252,11 @@ public interface Cmd
 						ch = '\n';
 						i++;
 					}
+					else if(n == 'b')
+					{
+						ch = (char)0x7f;
+						i++;
+					}
 				}
 				mSeq.add(new KeyCmd(ch, mod));
 			}

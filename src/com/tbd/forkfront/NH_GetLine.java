@@ -313,9 +313,13 @@ public class NH_GetLine
 					cancel();
 				else if(bSoftInput)
 				{
-					if(mInput.hasSelection())
+					boolean hasSelection = mInput.hasSelection();
+					if(hasSelection)
 						mInput.setText(mInput.getText().replace(mInput.getSelectionStart(), mInput.getSelectionEnd(), ""));
-					mInput.append(""+ch);
+					if(ch != 0x7f)
+						mInput.append(""+ch);
+					else if(!hasSelection)
+						doBackspace();
 					return KeyEventResult.HANDLED;
 				}
 				else
@@ -323,7 +327,17 @@ public class NH_GetLine
 			}
 			return KeyEventResult.HANDLED;
 		}
-		
+
+		private void doBackspace() {
+			int caretPos = mInput.getSelectionEnd();
+			if(caretPos == -1)
+				caretPos = mInput.getText().length();
+			if(caretPos == 0)
+				return;
+			mInput.setText(mInput.getText().delete(caretPos - 1, caretPos));
+			mInput.setSelection(caretPos - 1);
+		}
+
 		// ____________________________________________________________________________________
 		public void dismiss()
 		{
