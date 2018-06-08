@@ -241,6 +241,7 @@ public class CmdPanel
 		{
 			mInput = new EditText(mContext);
 			mInput.setMaxLines(1);
+			mInput.setSingleLine();
 			mInput.setText(((Cmd)mContextView.getTag()).getLabel());
 			mInput.selectAll();
 
@@ -264,6 +265,7 @@ public class CmdPanel
 		{
 			mInput = new EditText(mContext);
 			mInput.setMaxLines(1);
+			mInput.setSingleLine();
 			if(mItemId == R.id.change)
 				mInput.setText(((Cmd)mContextView.getTag()).getCommand());
 			mInput.selectAll();
@@ -324,10 +326,14 @@ public class CmdPanel
 				}
 				if(mItemId == R.id.change || mItemId == R.id.label)
 					mBtnPanel.removeViewAt(idx);
-				mBtnPanel.addView(createCmdButtonFromString(cmd, label), idx);
+				mBtnPanel.addView(createCmdButtonFromString(sanitize(cmd), sanitize(label)), idx);
 				mBtnPanel.refreshDrawableState();
 				mLayout.savePanelCmds(CmdPanel.this);
 			}
+		}
+
+		private String sanitize(String cmd) {
+			return cmd.replace("\n", "\\n").replace("\r", "\\n");
 		}
 	};
 
