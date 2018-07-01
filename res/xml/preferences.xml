@@ -75,6 +75,16 @@
 			android:text=""
 			android:max="255"/>
 
+		<com.tbd.forkfront.SliderPreference
+			android:title="Map border opacity"
+			android:summary="The opacity of the border around the map"
+			android:persistent="true"
+			android:key="borderOpacity"
+			android:dialogMessage="The opacity between invisible (0) and opaque (255)"
+			android:defaultValue="50"
+			android:text=""
+			android:max="255"/>
+
 		<PreferenceScreen
 			android:title="Directional overlay"
 			android:summary="Configure the directional overlay">
