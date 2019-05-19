@@ -124,7 +124,7 @@ public class ForkFront extends Activity
 	}
 
 	@TargetApi(Build.VERSION_CODES.M)
-	public void ensureReadWritePermissions(RequestExternalStorageResult requestExternalStorageResult)
+	public void ensureReadWritePermissions(final RequestExternalStorageResult requestExternalStorageResult)
 	{
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 		{
@@ -138,7 +138,7 @@ public class ForkFront extends Activity
 				else
 				{
 					// Chain callbacks if several requests are activated in parallel. This shouldn't happen though.
-					RequestExternalStorageResult prevRequest = mRequestExternalStorageResult;
+					final RequestExternalStorageResult prevRequest = mRequestExternalStorageResult;
 					mRequestExternalStorageResult = new RequestExternalStorageResult()
 					{
 						@Override
