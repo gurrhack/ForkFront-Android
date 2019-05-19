@@ -16,13 +16,19 @@ allprojects {
   }
 }
 
+group = 'com.tbd.forkfront'
+version = '1.0'
+
 apply plugin: 'com.android.library'
 
 android {
 
   compileSdkVersion 28
 
-  useLibrary  'org.apache.http.legacy'
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
 
   sourceSets {
     main {
@@ -31,4 +37,8 @@ android {
       res.srcDirs = ['res']
     }
   }
+}
+
+dependencies {
+  implementation "cz.msebera.android:httpclient:4.4.1.2"
 }
