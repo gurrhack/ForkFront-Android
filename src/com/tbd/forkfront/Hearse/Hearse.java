@@ -280,7 +280,7 @@ public class Hearse {
 						}
 					}
 				} else {
-					Log.print("Hearse not reachable");
+					showToast("Hearse not reachable");
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
