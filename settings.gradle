@@ -1,1 +1,2 @@
+include ':lib'
 rootProject.name = 'ForkFront-Android'

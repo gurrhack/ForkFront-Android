@@ -1,0 +1,33 @@
+plugins {
+  id 'com.android.library'
+}
+
+android {
+
+  compileSdkVersion 30
+  buildToolsVersion '30.0.3'
+
+  defaultConfig {
+    minSdkVersion 7
+    targetSdkVersion 30
+    versionCode 1100
+    versionName '1.1'
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  sourceSets {
+    main {
+      manifest.srcFile 'AndroidManifest.xml'
+      java.srcDirs = ['src']
+      res.srcDirs = ['res']
+    }
+  }
+}
+
+dependencies {
+  implementation 'cz.msebera.android:httpclient:4.4.1.2'
+}
