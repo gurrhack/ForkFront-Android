@@ -2,6 +2,10 @@ plugins {
   id 'com.android.library'
 }
 
+group = 'com.tbd.forkfront'
+version = '1.1'
+int versionId = 1100;
+
 android {
 
   compileSdkVersion 30
@@ -10,8 +14,8 @@ android {
   defaultConfig {
     minSdkVersion 7
     targetSdkVersion 30
-    versionCode 1100
-    versionName '1.1'
+    versionName version
+    versionCode versionId
   }
 
   compileOptions {
