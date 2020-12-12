@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -351,6 +352,7 @@ public class UpdateAssets extends AsyncTask<Void, Void, Void>
 		long lastMod = new File(dstPath, files[files.length - 1]).lastModified() + 1000 * 60;
 		edit.putLong(VERDAT_KEY, lastMod);
 
+		// TODO don't store absolute path.
 		edit.putString(DATADIR_KEY, dstPath.getAbsolutePath());
 
 		edit.commit();
@@ -387,6 +389,9 @@ public class UpdateAssets extends AsyncTask<Void, Void, Void>
 	// ____________________________________________________________________________________
 	private File findDataPath() throws IOException
 	{
+		// TODO remove support for internal storage.
+		// TODO migrate files to new storage if possible.
+
 		File external = getExternalDataPath();
 		File internal = getInternalDataPath();
 
@@ -422,8 +427,13 @@ public class UpdateAssets extends AsyncTask<Void, Void, Void>
 	{
 		File dataDir = null;
 		String state = Environment.getExternalStorageState();
-		if(Environment.MEDIA_MOUNTED.equals(state))
-			dataDir = new File(Environment.getExternalStorageDirectory(), "/Android/data/" + mNamespace);
+		if(Environment.MEDIA_MOUNTED.equals(state)) {
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+				dataDir = mActivity.getExternalFilesDir(null);
+			} else {
+				dataDir = new File(Environment.getExternalStorageDirectory(), "/Android/data/" + mNamespace);
+			}
+		}
 		return dataDir;
 	}
 
