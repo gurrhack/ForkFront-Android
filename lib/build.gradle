@@ -3,8 +3,8 @@ plugins {
 }
 
 group = 'com.tbd.forkfront'
-version = '1.1'
-int versionId = 1100;
+version = '1.2'
+int versionId = 1200;
 
 android {
 

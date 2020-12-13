@@ -159,7 +159,7 @@ public class NHW_Menu implements NH_Window
 	}
 
 	// ____________________________________________________________________________________
-	public void addMenu(int tile, int ident, int accelerator, int groupacc, int attr, String str, int preselected, int color)
+	public void addMenu(int tile, long ident, int accelerator, int groupacc, int attr, String str, int preselected, int color)
 	{
 		if(str.length() == 0 && tile < 0)
 			return;
@@ -439,7 +439,7 @@ public class NHW_Menu implements NH_Window
 		{
 			if(isShowing())
 			{
-				int id = item.getId();
+				long id = item.getId();
 				// Avoid the "You don't have that many!" message
 				if(count > 0)
 					count = Math.min(count, item.getMaxCount());

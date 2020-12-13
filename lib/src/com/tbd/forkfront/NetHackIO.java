@@ -2,13 +2,12 @@ package com.tbd.forkfront;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Environment;
 import android.os.Handler;
-import com.tbd.forkfront.*;
 
 public class NetHackIO
 {
@@ -17,7 +16,7 @@ public class NetHackIO
 	private final Thread mThread;
 	private final ByteDecoder mDecoder;
 	private final String mLibraryName;
-	private final ConcurrentLinkedQueue<Integer> mCmdQue;
+	private final ConcurrentLinkedQueue<Cmd> mCmdQue;
 	private int mNextWinId;
 	private int mMessageWid;
 	private volatile Integer mIsReady = 0;
@@ -27,13 +26,118 @@ public class NetHackIO
 	// ____________________________________________________________________________________ //
 	// Send commands																		//
 	// ____________________________________________________________________________________ //
-	private static final int KeyCmd = 0x80000000;
-	private static final int PosCmd = 0x90000000;
-	private static final int LineCmd = 0xa0000000;
-	private static final int SelectCmd = 0xb0000000;
-	private static final int SaveStateCmd = 0xc0000000;
-	private static final int AbortCmd = 0xd0000000;
-	private static final int DataMask = 0x0fffffff;
+	// TODO make responses explicit on requests instead of queuing them up
+	enum CmdType {
+		KEY,
+		POS,
+		LINE,
+		SELECT,
+		SAVE_STATE,
+		ABORT;
+	}
+
+	private interface Cmd {
+		CmdType type();
+	}
+
+	private static class AbortCmd implements Cmd {
+		@Override
+		public CmdType type() {
+			return CmdType.ABORT;
+		}
+	}
+
+	private static class SaveStateCmd implements Cmd {
+		@Override
+		public CmdType type() {
+			return CmdType.SAVE_STATE;
+		}
+	}
+
+	private static class KeyCmd implements Cmd {
+		private final char key;
+
+		KeyCmd(char key) {
+			this.key = key;
+		}
+
+		@Override
+		public CmdType type() {
+			return CmdType.KEY;
+		}
+	}
+
+	private static class PosCmd implements Cmd {
+		private final char key;
+		private final int x, y;
+
+		private PosCmd(char key) {
+			this.key = key;
+			this.x = 0;
+			this.y = 0;
+		}
+
+		public PosCmd(int x, int y) {
+			key = 0;
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public CmdType type() {
+			return CmdType.POS;
+		}
+	}
+
+	private static class LineCmd implements Cmd {
+
+		private final String line;
+
+		private LineCmd(String line) {
+			this.line = line;
+		}
+
+		@Override
+		public CmdType type() {
+			return CmdType.LINE;
+		}
+	}
+
+	private static class Item {
+		final int count;
+		final long id;
+
+		private Item(long id, int count) {
+			this.id = id;
+			this.count = count;
+		}
+	}
+
+	private static class SelectCmd implements Cmd {
+		long[] items;
+
+		SelectCmd(long id, int count) {
+			items = new long[]{id, count};
+		}
+
+		SelectCmd(List<MenuItem> items) {
+			if(items == null) {
+				this.items = null;
+			} else {
+				this.items = new long[items.size() * 2];
+				for(int i = 0; i < items.size(); i++) {
+					this.items[i * 2 + 0] = items.get(i).getId();
+					this.items[i * 2 + 1] = items.get(i).getCount();
+				}
+			}
+		}
+
+
+		@Override
+		public CmdType type() {
+			return CmdType.SELECT;
+		}
+	}
 
 	// ____________________________________________________________________________________
 	public NetHackIO(Activity context, NH_Handler nhHandler, ByteDecoder decoder)
@@ -57,7 +161,7 @@ public class NetHackIO
 	// ____________________________________________________________________________________
 	public void saveState()
 	{
-		mCmdQue.add(SaveStateCmd);
+		mCmdQue.add(new SaveStateCmd());
 		// give it some time
 		for(int i = 0; i < 5; i++)
 		{
@@ -151,95 +255,60 @@ public class NetHackIO
 	};
 
 	// ____________________________________________________________________________________
-	int verifyData(int d)
-	{
-		if(DEBUG.isOn() && d != 0 && (d & DataMask) == 0)
-			throw new IllegalArgumentException();
-		return d;
-	}
-
-	// ____________________________________________________________________________________
 	public void sendKeyCmd(char key)
 	{
 		mNhHandler.hideDPad();
-		mCmdQue.add(KeyCmd);
-		mCmdQue.add((int)key);
+		mCmdQue.add(new KeyCmd(key));
 	}
 
 	// ____________________________________________________________________________________
 	public void sendDirKeyCmd(char key)
 	{
 		mNhHandler.hideDPad();
-		mCmdQue.add(PosCmd);
-		mCmdQue.add((int)key);
-		mCmdQue.add(0);
-		mCmdQue.add(0);
+		mCmdQue.add(new PosCmd(key));
 	}
 
 	// ____________________________________________________________________________________
 	public void sendPosCmd(int x, int y)
 	{
 		mNhHandler.hideDPad();
-		mCmdQue.add(PosCmd);
-		mCmdQue.add(0);
-		mCmdQue.add(verifyData(x));
-		mCmdQue.add(verifyData(y));
+		mCmdQue.add(new PosCmd(x, y));
 	}
 
 	// ____________________________________________________________________________________
 	public void sendLineCmd(String str)
 	{
-		mCmdQue.add(LineCmd);
-		for(int i = 0; i < str.length(); i++)
-		{
-			char c = str.charAt(i);
-			if(c == '\n')
-				break;
-			if(c < 0xff)
-				mCmdQue.add((int)c);
-		}
-		mCmdQue.add((int)'\n');
+		mCmdQue.add(new LineCmd(str));
 	}
 
 	// ____________________________________________________________________________________
-	public void sendSelectCmd(int id, int count)
+	public void sendSelectCmd(long id, int count)
 	{
-		mCmdQue.add(SelectCmd);
-		mCmdQue.add(1);
-		mCmdQue.add(verifyData(id));
-		mCmdQue.add(verifyData(count));
+		mCmdQue.add(new SelectCmd(id, count));
 	}
 
 	// ____________________________________________________________________________________
 	public void sendSelectCmd(ArrayList<MenuItem> items)
 	{
-		mCmdQue.add(SelectCmd);
-		mCmdQue.add(verifyData(items.size()));
-		for(MenuItem i : items)
-		{
-			mCmdQue.add(verifyData(i.getId()));
-			mCmdQue.add(verifyData(i.getCount()));
-		}
+		mCmdQue.add(new SelectCmd(items));
 	}
 
 	// ____________________________________________________________________________________
 	public void sendSelectNoneCmd()
 	{
-		mCmdQue.add(SelectCmd);
-		mCmdQue.add(0);
+		mCmdQue.add(new SelectCmd(0, 0));
 	}
 
 	// ____________________________________________________________________________________
 	public void sendCancelSelectCmd()
 	{
-		mCmdQue.add(SelectCmd);
-		mCmdQue.add(-1);
+		mCmdQue.add(new SelectCmd(null));
 	}
 
 	// ____________________________________________________________________________________
 	private void sendAbortCmd()
 	{
-		mCmdQue.add(AbortCmd);
+		mCmdQue.add(new AbortCmd());
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -247,10 +316,10 @@ public class NetHackIO
 	// ------------------------------------------------------------------------------------
 
 	// ____________________________________________________________________________________
-	private int removeFromQue()
+	private Cmd removeFromQue()
 	{
-		Integer c = mCmdQue.poll();
-		while(c == null)
+		Cmd cmd = mCmdQue.poll();
+		while(cmd == null)
 		{
 			try
 			{
@@ -259,43 +328,43 @@ public class NetHackIO
 			catch(InterruptedException e)
 			{
 			}
-			c = mCmdQue.poll();
+			cmd = mCmdQue.poll();
 		}
-		return c;
+		return cmd;
 	}
 
 	// ____________________________________________________________________________________
-	private void handleSpecialCmds(int cmd)
+	private void handleSpecialCmds(Cmd cmd)
 	{
-		switch(cmd)
+		switch(cmd.type())
 		{
-		case SaveStateCmd:
+		case SAVE_STATE:
 			SaveNetHackState();
 		break;
 		}
 	}
 
 	// ____________________________________________________________________________________
-	private int discardUntil(int cmd0)
+	private Cmd discardUntil(CmdType cmd0)
 	{
-		int cmd;
+		Cmd cmd;
 		do
 		{
 			cmd = removeFromQue();
 			handleSpecialCmds(cmd);
-		}while(cmd != cmd0 && cmd != AbortCmd);
+		}while(cmd.type() != cmd0 && cmd.type() != CmdType.ABORT);
 		return cmd;
 	}
 
 	// ____________________________________________________________________________________
-	private int discardUntil(int cmd0, int cmd1)
+	private Cmd discardUntil(CmdType cmd0, CmdType cmd1)
 	{
-		int cmd;
+		Cmd cmd;
 		do
 		{
 			cmd = removeFromQue();
 			handleSpecialCmds(cmd);
-		}while(cmd != cmd0 && cmd != cmd1 && cmd != AbortCmd);
+		}while(cmd.type() != cmd0 && cmd.type() != cmd1 && cmd.type() != CmdType.ABORT);
 		return cmd;
 	}
 
@@ -325,8 +394,9 @@ public class NetHackIO
 
 		incReady();
 		
-		if(discardUntil(KeyCmd) == KeyCmd)
-			key = removeFromQue();
+		Cmd cmd = discardUntil(CmdType.KEY);
+		if(cmd.type() == CmdType.KEY)
+			key = ((KeyCmd)cmd).key;
 
 		decReady();
 		return key;
@@ -350,21 +420,19 @@ public class NetHackIO
 			});
 		}
 
-		int cmd = discardUntil(KeyCmd, PosCmd);
+		Cmd cmd = discardUntil(CmdType.KEY, CmdType.POS);
 
 		int key = 0x80;
 
-		if(cmd != AbortCmd)
-		{			
-			key = removeFromQue();
-			if(cmd == PosCmd)
-			{
-				pos[0] = removeFromQue(); // x
-				pos[1] = removeFromQue(); // y
-			}
+		if(cmd.type() == CmdType.KEY) {
+			key = ((KeyCmd)cmd).key;
+		} else if(cmd.type() == CmdType.POS) {
+			key = ((PosCmd)cmd).key;
+			pos[0] = ((PosCmd)cmd).x;
+			pos[1] = ((PosCmd)cmd).y;
 		}
 		
-		decReady();		
+		decReady();
 		return key;
 	}
 
@@ -511,27 +579,20 @@ public class NetHackIO
 	private String waitForLine()
 	{
 		incReady();
-		
-		StringBuilder builder = new StringBuilder();
 
-		if(discardUntil(LineCmd) == LineCmd)
+		Cmd cmd = discardUntil(CmdType.LINE);
+		String string;
+		if(cmd.type() == CmdType.LINE)
 		{
-			while(true)
-			{
-				int c = removeFromQue();
-				if(c == '\n')
-					break;
-				// prevent injecting special abort character
-				if(c == 0x80)
-					c = '?';
-				builder.append((char)c);
-			}
+			// prevent injecting special abort character
+			string = ((LineCmd)cmd).line.replace((char)0x80, '?');
 		}
-		else
-			builder.append((char)0x80);
-		
+		else {
+			string = new String(new char[]{0x80});
+		}
+
 		decReady();
-		return builder.toString();
+		return string;
 	}
 
 	// ____________________________________________________________________________________
@@ -623,7 +684,7 @@ public class NetHackIO
 
 	// ____________________________________________________________________________________
 	@SuppressWarnings("unused")
-	private void addMenu(final int wid, final int tile, final int id, final int acc, final int groupAcc, final int attr, final byte[] text, final int bSelected, final int color)
+	private void addMenu(final int wid, final int tile, final long id, final int acc, final int groupAcc, final int attr, final byte[] text, final int bSelected, final int color)
 	{
 		final String msg = mDecoder.decode(text);
 		mHandler.post(new Runnable()
@@ -655,7 +716,7 @@ public class NetHackIO
 
 	// ____________________________________________________________________________________
 	@SuppressWarnings("unused")
-	private int[] selectMenu(final int wid, final int how, final int reentry)
+	private long[] selectMenu(final int wid, final int how, final int reentry)
 	{
 		//Log.print("nhthread: selectMenu");
 		if(reentry == 0)
@@ -674,31 +735,18 @@ public class NetHackIO
 	}
 
 	// ____________________________________________________________________________________
-	private int[] waitForSelect()
+	private long[] waitForSelect()
 	{
 		incReady();
 		
-		int[] items = null;
+		long[] items = null;
 		
-		int cmd = discardUntil(SelectCmd);
-		if(cmd == SelectCmd)
-		{
-			int nItems = removeFromQue();
-			if(nItems >= 0)
-			{
-				items = new int[nItems * 2];
-				for(int i = 0; i < items.length;)
-				{
-					items[i++] = removeFromQue(); // id
-					items[i++] = removeFromQue(); // count
-				}				
-			}
-		}
-		else if(cmd == AbortCmd)
-		{
-			items = new int[1];
-		}
-		
+		Cmd cmd = discardUntil(CmdType.SELECT);
+		if(cmd.type() == CmdType.SELECT)
+			items = ((SelectCmd)cmd).items;
+		else
+			items = new long[1];
+
 		decReady();
 		return items;
 	}

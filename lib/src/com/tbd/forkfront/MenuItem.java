@@ -8,7 +8,7 @@ import com.tbd.forkfront.TextAttr;
 public class MenuItem
 {
 	private final int mTile;
-	private final int mIdent;
+	private final long mIdent;
 	private char mAccelerator;
 	private final char mGroupacc;
 	private final int mAttr;
@@ -20,7 +20,7 @@ public class MenuItem
 	private int mMaxCount;
 	private View mView;
 
-	public MenuItem(int tile, int ident, int accelerator, int groupacc, int attr, String str, int selected, Integer color)
+	public MenuItem(int tile, long ident, int accelerator, int groupacc, int attr, String str, int selected, Integer color)
 	{
 		mTile = tile;
 		mIdent = ident;
@@ -118,7 +118,7 @@ public class MenuItem
 	}
 
 	// ____________________________________________________________________________________
-	public int getId()
+	public long getId()
 	{
 		return mIdent;
 	}

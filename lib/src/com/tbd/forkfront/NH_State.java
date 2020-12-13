@@ -676,7 +676,7 @@ public class NH_State
 
 		// ____________________________________________________________________________________
 		@Override
-		public void addMenu(int wid, int tile, int id, int acc, int groupAcc, int attr, String text, int bSelected, int color)
+		public void addMenu(int wid, int tile, long id, int acc, int groupAcc, int attr, String text, int bSelected, int color)
 		{
 			((NHW_Menu)getWindow(wid)).addMenu(tile, id, acc, groupAcc, attr, text, bSelected, color);
 		}
